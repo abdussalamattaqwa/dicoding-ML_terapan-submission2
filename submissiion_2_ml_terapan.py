@@ -80,7 +80,7 @@ files.upload()
 """_Membuat folder dan mengekstrak dataset pada folder tersebut_"""
 
 ! mkdir imdb-dataset
-! unzip imdb-dataset.zip -d imdb-dataset
+! unzip -o imdb-dataset.zip -d imdb-dataset
 
 """_Mengimport setiap librari yang akan digunakan_"""
 
@@ -120,6 +120,7 @@ imdb.head()
 imdb.drop(imdb[imdb['startYear'] == "\\N" ].index, inplace = True)
 imdb.drop(imdb[imdb['genres'] == "\\N" ].index, inplace = True)
 imdb.drop(imdb[imdb['titleType'] == "\\N" ].index, inplace = True)
+imdb.drop(imdb[imdb['runtimeMinutes'] == "\\N" ].index, inplace = True)
 
 """_Mendapatkan tahun sekarang_"""
 
@@ -132,6 +133,7 @@ print(year)
 """_Mengubah tipe data fitur startYear dan memfilter data yang tersedia hanya selama setahun terakhir_"""
 
 imdb['startYear'] = imdb['startYear'].astype(int)
+imdb['runtimeMinutes'] = imdb['runtimeMinutes'].astype(int)
 imdb = imdb[imdb['startYear'] > (year-1) ]
 
 """_Mendapatkan informasi dataset_
@@ -141,18 +143,26 @@ Tabel 4 menyediakan informasi dataset yang digunakan. Berdasarkan informasi pada
 
 imdb.info()
 
-"""_Mendapatkan informasi statistik dataset_
-
-Analisis statistik juga diperlukan dalam dataset. Analisis statistik dibutuhkan untuk menganalisis penyebaran data masing-masing fitur dengan tipe data *integer* untuk melihat apakah ada data anomali. Tabel 5 menyediakan informasi statistik pada dataset yang digunakan. *Count* mrtupakan jumlah data untuk masing-masing fitur. *Min* dan *max* selanjutnya adalah nilai terkecil dan nilai terbesar dari suatu fitur. *Mean* (rata-rata) merupakan suatu ukuran pemusatan data. *Mean* suatu data juga merupakan statistik karena mampu menggambarkan bahwa data tersebut berada pada kisaran *mean* data tersebut. *Median* menentukan letak tengah data setelah data disusun menurut urutan nilainya. Bisa juga nilai tengah dari data-data yang terurut. Simbol untuk *median* adalah Me. Dengan *median* Me, maka 50% dari banyak data nilainya paling tinggi sama dengan Me, dan 50% dari banyak data nilainya paling rendah sama dengan Me. Dalam mencari *median*, dibedakan untuk banyak data ganjil dan banyak data genap. Standar deviasi adalah ukuran statistik yang digunakan untuk mengukur sejauh mana data dalam sebuah himpunan cenderung bervariasi dari nilai rata-ratanya. Standar Deviasi dan *Varians* Salah satu teknik statistik yg digunakan untuk menjelaskan homogenitas kelompok. *Varians* merupakan jumlah kuadrat semua deviasi nilai-nilai individual thd rata-rata kelompok. Sedangkan akar dari *varians* disebut dengan standar deviasi atau simpangan baku. Standar Deviasi dan *Varians* Simpangan baku merupakan variasi sebaran data. Semakin kecil nilai sebarannya berarti variasi nilai data makin sama Jika sebarannya bernilai 0, maka nilai semua datanya adalah sama. Semakin besar nilai sebarannya berarti data semakin bervariasi.
+"""Analisis statistik juga diperlukan dalam dataset. Analisis statistik dibutuhkan untuk menganalisis penyebaran data masing-masing fitur dengan tipe data *integer* untuk melihat apakah ada data anomali. Tabel 5 menyediakan informasi statistik pada dataset yang digunakan. *Count* mrtupakan jumlah data untuk masing-masing fitur. *Min* dan *max* selanjutnya adalah nilai terkecil dan nilai terbesar dari suatu fitur. *Mean* (rata-rata) merupakan suatu ukuran pemusatan data. *Mean* suatu data juga merupakan statistik karena mampu menggambarkan bahwa data tersebut berada pada kisaran *mean* data tersebut. *Median* menentukan letak tengah data setelah data disusun menurut urutan nilainya. Bisa juga nilai tengah dari data-data yang terurut. Simbol untuk *median* adalah Me. Dengan *median* Me, maka 50% dari banyak data nilainya paling tinggi sama dengan Me, dan 50% dari banyak data nilainya paling rendah sama dengan Me. Dalam mencari *median*, dibedakan untuk banyak data ganjil dan banyak data genap. Standar deviasi adalah ukuran statistik yang digunakan untuk mengukur sejauh mana data dalam sebuah himpunan cenderung bervariasi dari nilai rata-ratanya. Standar Deviasi dan *Varians* Salah satu teknik statistik yg digunakan untuk menjelaskan homogenitas kelompok. *Varians* merupakan jumlah kuadrat semua deviasi nilai-nilai individual thd rata-rata kelompok. Sedangkan akar dari *varians* disebut dengan standar deviasi atau simpangan baku. Standar Deviasi dan *Varians* Simpangan baku merupakan variasi sebaran data. Semakin kecil nilai sebarannya berarti variasi nilai data makin sama Jika sebarannya bernilai 0, maka nilai semua datanya adalah sama. Semakin besar nilai sebarannya berarti data semakin bervariasi.
 
 Informmasi statistik dataset pada Tabel 5 didapatkan bahwa keseluruhan videopada dataset adalah video dengan keluaran tahun 2024. Video dengan rating terkecil dan terbesar adalah video dengan rating 2 dan 10. Rata-rata video pada dataset memiliki rating sebesar 7,5. Jumlah *vote* pada video yang paling kecil adalah 5 dan video yang memiliki *vote* terbanyak adalah sebanyak 29356.
+
+_Mendapatkan informasi statistik dataset_
 """
 
 imdb.describe()
 
-"""_Plot distribusi rating pada dataset_
+"""_Plot distribusi jumlah *vote* film pada dataset_"""
 
-Distribusi untuk setiap rating video dapat dilihat pada Gambar 1. Berdasarkan hasil visualisasi didapatkan bahwa video yang memiliki rating 1 hingga 5 memiliki jumlah video yang sedikit. Bahkan video yang memiliki rating tertinggi yaitu 10 memiliki jumlah video yang lebih banyak dengan video yang memiliki rating 1 hingga 5 jika digabungkan. Hal ini menandakan bahwa dataset yang digunakan pada proyek ini memiliki dataset video yang cenderung memiliki video dengan rating yang tinggi.
+imdb['numVotes'].plot(kind='hist', edgecolor='black', bins=50)
+
+"""_Plot distribusi runtimeMinutes film pada dataset_"""
+
+imdb['runtimeMinutes'].plot(kind='hist', edgecolor='black', bins=50)
+
+"""Distribusi untuk setiap rating video dapat dilihat pada Gambar 1. Berdasarkan hasil visualisasi didapatkan bahwa video yang memiliki rating 1 hingga 5 memiliki jumlah video yang sedikit. Bahkan video yang memiliki rating tertinggi yaitu 10 memiliki jumlah video yang lebih banyak dengan video yang memiliki rating 1 hingga 5 jika digabungkan. Hal ini menandakan bahwa dataset yang digunakan pada proyek ini memiliki dataset video yang cenderung memiliki video dengan rating yang tinggi.
+
+_Plot distribusi rating pada dataset_
 """
 
 imdb['averageRating'].plot(kind='hist', edgecolor='black')
@@ -208,9 +218,9 @@ data = pd.DataFrame({'jumlah sampel':count, 'persentase':percent.round(1)})
 print(data)
 count.plot(kind='bar', title=feature);
 
-"""_Visualisasi untuk fitur averageRating, numVotes, dan titleType_
+"""Pada Gambar 4 memvisualisasikan untuk fitur averageRating, numVotes, dan titleType. Berdasarkan hasil visualisasi didapatkan bahwa video dengan jenis tvEpisode meskipun memilki jumlah yang banyak namun jumlah *vote* pada video tersebut memiliki jumlah *vote* yang sedikit. Voting adalah suatu kegiatan untuk menentukan pendapat melalui suara terbanyak. Video dengan jenis *movie* meskipun jumlahnya lebih sedikit namun kebanayk video dengan jenis ini memiliki jumlah *vote* yang banyak. Hal ini menandakan bahwa meskipun jenis video yang paling banyak dikeluarkan pada tahun 2024 adalah tvEpisode tidak menjamin setiap video memiliki *vote* yang banyak. Terdapat satu data video dengan jenis tvMiniSeries yang memiliki *vote* yang terbanyak dibandingkan video yang lainnya.
 
-Pada Gambar 4 memvisualisasikan untuk fitur averageRating, numVotes, dan titleType. Berdasarkan hasil visualisasi didapatkan bahwa video dengan jenis tvEpisode meskipun memilki jumlah yang banyak namun jumlah *vote* pada video tersebut memiliki jumlah *vote* yang sedikit. Voting adalah suatu kegiatan untuk menentukan pendapat melalui suara terbanyak. Video dengan jenis *movie* meskipun jumlahnya lebih sedikit namun kebanayk video dengan jenis ini memiliki jumlah *vote* yang banyak. Hal ini menandakan bahwa meskipun jenis video yang paling banyak dikeluarkan pada tahun 2024 adalah tvEpisode tidak menjamin setiap video memiliki *vote* yang banyak. Terdapat satu data video dengan jenis tvMiniSeries yang memiliki *vote* yang terbanyak dibandingkan video yang lainnya.
+_Visualisasi untuk fitur averageRating, numVotes, dan titleType_
 """
 
 import seaborn as sns
@@ -221,10 +231,24 @@ sns.lmplot(
     height=5,
     aspect=2,
     hue="titleType",
-    scatter_kws={"s": 8},
-    line_kws={"linewidth": 1},
+    # scatter_kws={"s": 8},
+    # line_kws={"linewidth": 1},
 )
 plt.title("averageRating and numVotes VS titleType", fontsize=14, color="#0a2e4f")
+plt.show()
+
+"""Visualisasi untuk fitur averageRating, runtimeMinutes, dan titleType"""
+
+import seaborn as sns
+sns.lmplot(
+    data=imdb,
+    x="averageRating",
+    y="runtimeMinutes",
+    height=5,
+    aspect=2,
+    hue="titleType",
+)
+plt.title("averageRating and runtimeMinutes VS titleType", fontsize=14, color="#0a2e4f")
 plt.show()
 
 """_Inisialisasi TF-IDF Vectorizer untuk menggunakan metode TF-IDF pada fitur titleType_
@@ -266,6 +290,14 @@ feature_matrix.shape
 feature_column = np.concatenate((tf.get_feature_names_out(), vec.get_feature_names_out()), axis = 0)
 feature_column
 
+"""_Melihat hasil dari ekstraksi fitur_"""
+
+feature_df = pd.DataFrame(feature_matrix, index=imdb['originalTitle'], columns=feature_column)
+print('Shape:', feature_df.shape)
+
+# Melihat similarity matrix pada setiap resto
+feature_df.head()
+
 """## Modeling
 Tahapan ini melakukan proses mencari kemiripan antar video berdasarkan ekstraksi fitur menggunakan CountVectorizer dan TfidfVectorizer. Metode yang digunakan adalah *cosine similairty* karena berfungsi untuk mengukur kesamaan dokumen dalam analisis teks. *Cosine similairty* mengukur kesamaan antara dua vektor. Kesamaan diukur dengan jarak sudut kosinus antara dua vektor dan menentukan apakah dua vektor menunjuk pada arah yang sama.
 
@@ -284,8 +316,6 @@ print('Shape:', cosine_sim_df.shape)
 # Melihat similarity matrix pada setiap resto
 cosine_sim_df.sample(5, axis=1).sample(10, axis=0)
 
-
-
 """## Evaluation
 
 Pada tahap ini dilakaukan proses mencari rekomendasi video dan memunculkan video-video yang direkomendasikan untuk ditonton. Rekomendasi video dicari menggunakan hasil dari pengukuran *cosine similarity*. Tahap pencarian video dilakukan dengan mencari video yang memiliki kemiripan yang tinggi kemudian diurutkan berdasarkan data rating video.
@@ -298,7 +328,7 @@ similarity_data = cosine_sim_df.reset_index().drop(columns=['originalTitle'])
 similarity_data.index.names = ['index']
 
 final_result = pd.concat([imdb, similarity_data], axis=1)
-final_result
+final_result.head(5)
 
 """_Membuat fungsi video_recommendations_"""
 
@@ -329,11 +359,41 @@ def video_recommendations(original_title, items=['originalTitle', 'genres', 'ave
 
 """_Mencari data video berdasarkan originalTitle_"""
 
-imdb[imdb.originalTitle.eq('Tati Part Time')]
+original_title = 'Boy Swallows Universe'
+imdb[imdb.originalTitle.eq(original_title)]
 
 """_Mendapatkan uruean rekomendasi video berdasarkan fitur titleType, originalTitle dan raing video_"""
 
-video_recommendations('Tati Part Time')
+results = video_recommendations(original_title)
+results
+
+"""## Evaluation
+Pada tahap evaluasi, hasil video dari sistem rekomendasi yang dibuat akan dinilai. Evaluasi dilakukan dengan cara menilai relevansi genre antara hasil video rekomendasi dan video masukan. Berikut metric precision pada evaluasi Content Based Filtering.
+
+_Mendapatkan kumpulan genre pada video_
+"""
+
+vid_genre = imdb[imdb.originalTitle.eq(original_title)]['genres']
+vid_genre = vid_genre.str.split(',', expand=True)
+vid_genre =vid_genre.to_numpy()
+
+"""_Menghitung relevansi setiap genre_"""
+
+ev = []
+
+for g in vid_genre[0]:
+  related = 0
+  for vid in results.genres:
+    if g in vid.split(','):
+      related +=1
+  related = (related / 5)  * 100
+  ev.append(related)
+
+"""Hasil relevansi setia genre"""
+
+d = {"Genres": vid_genre[0], "Precision": ev}
+df = pd.DataFrame(d)
+df
 
 """# Referensi
 
